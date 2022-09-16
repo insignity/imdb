@@ -1,85 +1,150 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:imdb/extensions/context_shortcuts.dart';
+import 'package:imdb/theming/app_theme.dart';
+import 'package:imdb/widgets/app_bar.dart';
+
+import 'login_bloc.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(icon: Icon(Icons.label), onPressed: () {}),
-          actions: [
-            IconButton(icon: Icon(Icons.label), onPressed: () {}),
-            IconButton(icon: Icon(Icons.label), onPressed: () {}),
-          ],
-          title: Text('appbar'),
-        ),
-        body: ListView(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          children: [
-            Text('Войти в свою учётную запись'),
-            Text(
-                'Чтобы пользоваться правкой и возможностями рейтинга TMDB, а также получить персональные рекомендации, необходимо войти в свою учётную запись. Если у вас нет учётной записи, её регистрация является бесплатной и простой.'),
-            Text(
-                'Если Вы зарегистрировались, но не получили письмо для подтверждения, здесь, чтобы отправить письмо повторно.'),
-            SizedBox(height: 32),
-            Form(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Логин'),
-                SizedBox(height: 8),
-                TextFormField(),
-                SizedBox(height: 16),
-                Text('Пароль'),
-                TextFormField(),
-                Row(
-                  children: [
-                    ElevatedButton(onPressed: () {}, child: Text('Войти')),
-                    TextButton(onPressed: () {}, child: Text('Сбросить пароль'))
-                  ],
-                ),
-              ],
-            )),
-            Footer(),
-          ],
-        ));
+    return BlocProvider(
+      create: (context) => LoginBloc(),
+      child: CustomAppBar(
+          body: ListView(
+        children: [
+          _Header(),
+          _Footer(),
+        ],
+      )),
+    );
   }
 }
 
-class Footer extends StatelessWidget {
-  const Footer({Key? key}) : super(key: key);
+class _Header extends StatelessWidget {
+  const _Header({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ElevatedButton(onPressed: () {}, child: Text('Вступить в сообщество')),
-        SizedBox(height: 20),
-        
-        TextButton(child: Text('Главное'), onPressed: () {}),
-        TextButton(child: Text('o TMDB'), onPressed: () {}),
-        TextButton(child: Text('Связаться с нами'), onPressed: () {}),
-        TextButton(child: Text('Форумы поддержки'), onPressed: () {}),
+    LoginBloc _loginBloc = BlocProvider.of<LoginBloc>(context);
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      color: AppColors.white,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 20),
+          Text('Войти в свою учётную запись', style: context.txt.headline2),
+          const SizedBox(height: 12),
+          RichText(
+            text: TextSpan(style: context.txt.bodyText1, children: [
+              TextSpan(
+                  text:
+                      'Чтобы пользоваться правкой и возможностями рейтинга TMDB, а также получить персональные рекомендации, необходимо войти в свою учётную запись. Если у вас нет учётной записи, её регистрация является бесплатной и простой.'),
+              TextSpan(
+                  text: ' Нажмите здесь',
+                  style: TextStyle(color: Colors.blue),
+                  recognizer: TapGestureRecognizer()..onTap = () {}),
+              TextSpan(text: ', чтобы начать.')
+            ]),
+          ),
+          const SizedBox(height: 16),
+          RichText(
+            text: TextSpan(style: context.txt.bodyText1, children: [
+              TextSpan(
+                text:
+                    'Если Вы зарегистрировались, но не получили письмо для подтверждения, здесь, чтобы отправить письмо повторно.',
+              ),
+              TextSpan(
+                  text: ' нажмите здесь',
+                  style: TextStyle(color: Colors.blue),
+                  recognizer: TapGestureRecognizer()..onTap = () {}),
+              TextSpan(text: ', чтобы отправить письмо повторно.')
+            ]),
+          ),
+          const SizedBox(height: 32),
+          BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
+            if (state is LoginEmptyState)
+              return Form(
+                  child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Имя пользователя', style: context.txt.bodyText1),
+                  SizedBox(height: 8),
+                  TextFormField(),
+                  SizedBox(height: 16),
+                  Text('Пароль', style: context.txt.bodyText1),
+                  TextFormField(),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Row(
+                    children: [
+                      ElevatedButton(
+                          onPressed: () {
+                            _loginBloc.add(LoginSubmitEvent());
+                          },
+                          child: Text('Войти')),
+                      const SizedBox(width: 10),
+                      TextButton(
+                          onPressed: () {}, child: Text('Сбросить пароль'))
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                ],
+              ));
+            if (state is LoginLoadingState)
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            if (state is LoginLoadedState) return Text('congrats');
+            return SizedBox.shrink();
+          }),
+        ],
+      ),
+    );
+  }
+}
 
-        TextButton(child: Text('API'), onPressed: () {}),
-        TextButton(child: Text('Статус системы'), onPressed: () {}),
-        TextButton(child: Text('Учавствуйте'), onPressed: () {}),
-        TextButton(child: Text('Писание об участии'), onPressed: () {}),
-        TextButton(child: Text('Добавить новый фильм'), onPressed: () {}),
-        TextButton(child: Text('Добавить новый сериал'), onPressed: () {}),
-        TextButton(child: Text('Сообщество'), onPressed: () {}),
-        TextButton(child: Text('Руководство'), onPressed: () {}),
-        TextButton(child: Text('Обсуждение'), onPressed: () {}),
-        TextButton(child: Text('Доска почета'), onPressed: () {}),
-        TextButton(child: Text('Twitter'), onPressed: () {}),
-        TextButton(child: Text('О праве'), onPressed: () {}),
-        TextButton(child: Text('Условие пользования'), onPressed: () {}),
-        TextButton(child: Text('API правила позльзования'), onPressed: () {}),
-        TextButton(
-            child: Text('Политика конвиденциальности'), onPressed: () {}),
-      ],
+class _Footer extends StatelessWidget {
+  const _Footer({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: AppColors.darkBlue,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ElevatedButton(
+              onPressed: () {}, child: Text('Вступить в сообщество')),
+          SizedBox(height: 20),
+          TextButton(child: Text('Главное'), onPressed: () {}),
+          TextButton(child: Text('o TMDB'), onPressed: () {}),
+          TextButton(child: Text('Связаться с нами'), onPressed: () {}),
+          TextButton(child: Text('Форумы поддержки'), onPressed: () {}),
+          TextButton(child: Text('API'), onPressed: () {}),
+          TextButton(child: Text('Статус системы'), onPressed: () {}),
+          TextButton(child: Text('Учавствуйте'), onPressed: () {}),
+          TextButton(child: Text('Писание об участии'), onPressed: () {}),
+          TextButton(child: Text('Добавить новый фильм'), onPressed: () {}),
+          TextButton(child: Text('Добавить новый сериал'), onPressed: () {}),
+          TextButton(child: Text('Сообщество'), onPressed: () {}),
+          TextButton(child: Text('Руководство'), onPressed: () {}),
+          TextButton(child: Text('Обсуждение'), onPressed: () {}),
+          TextButton(child: Text('Доска почета'), onPressed: () {}),
+          TextButton(child: Text('Twitter'), onPressed: () {}),
+          TextButton(child: Text('О праве'), onPressed: () {}),
+          TextButton(child: Text('Условие пользования'), onPressed: () {}),
+          TextButton(child: Text('API правила позльзования'), onPressed: () {}),
+          TextButton(
+              child: Text('Политика конвиденциальности'), onPressed: () {}),
+        ],
+      ),
     );
   }
 }
