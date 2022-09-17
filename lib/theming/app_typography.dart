@@ -17,12 +17,11 @@ class AppTextTheme {
       fontWeight: FontWeight.w700,
       fontSize: 24,
     ),
-    // headline3: TextStyle(
-    //   fontFamily: AppFonts.montserrat,
-    //   fontWeight: FontWeight.w700,
-    //   fontSize: 18,
-    //   height: 23 / 18,
-    // ),
+    headline3: TextStyle(
+      fontFamily: AppFonts.montserrat,
+      fontWeight: FontWeight.w700,
+      fontSize: 16,
+    ),
     // headline4: TextStyle(
     //   fontFamily: AppFonts.montserrat,
     //   fontWeight: FontWeight.w600,
@@ -58,6 +57,11 @@ class AppTextTheme {
     //   fontSize: 11,
     //   height: 13 / 11,
     // ),
+    caption: TextStyle(
+      fontFamily: AppFonts.montserrat,
+      fontWeight: FontWeight.w400,
+      fontSize: 17.28,
+    ),
 
   );
 }
@@ -67,6 +71,7 @@ extension AppTextThemeExtension on TextTheme {
   TextStyle? get p => bodyText1;
   TextStyle? get ps => p?.semiBold;
   TextStyle? get pu => p?.underline;
+  TextStyle? get a => caption;
   /// Desktop p-u
   TextStyle? get psu => ps?.underline;
   TextStyle? get label => subtitle2;

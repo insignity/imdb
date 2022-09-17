@@ -1,19 +1,21 @@
 import 'package:dio/dio.dart';
 import 'package:imdb/models/token.dart';
+import 'package:imdb/utilities/interceptors/interceptor.dart';
+import 'package:retrofit/http.dart';
 
-class Api {
-  static const String _apiKey = '8b455d081818f2a5acf036124e0b33f9';
-  static const String _baseUrl = 'https://api.themoviedb.org/3/';
+part 'api.g.dart';
 
-  final Dio _api = Dio(BaseOptions(baseUrl: _baseUrl));
+const String _baseUrl = 'https://api.themoviedb.org/3/';
+const String _apiKey = '8b455d081818f2a5acf036124e0b33f9';
 
-  Future<void> getToken() async {
-    try {
-      final result = await _api.get(
-        'authentication/token/new?api_key=$_apiKey',
-      );
-      final token = Token.fromJson(result.data);
-      print(token.getToken);
-    } catch (e) {}
+class Api extends __Api {
+  Api() : super(Dio(), baseUrl: _baseUrl) {
+    super._dio.interceptors.addAll([AuthInterceptor()]);
   }
+}
+
+@RestApi(baseUrl: _baseUrl)
+abstract class _Api {
+  @GET('authentication/token/new')
+  Future<Token> getToken();
 }

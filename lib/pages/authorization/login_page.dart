@@ -1,9 +1,12 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:imdb/extensions/context_shortcuts.dart';
+import 'package:imdb/routing/app_router.dart';
 import 'package:imdb/theming/app_theme.dart';
+import 'package:imdb/utilities/extensions/context_shortcuts.dart';
 import 'package:imdb/widgets/app_bar.dart';
+import 'package:imdb/widgets/footer.dart';
 
 import 'login_bloc.dart';
 
@@ -18,7 +21,7 @@ class LoginPage extends StatelessWidget {
           body: ListView(
         children: [
           _Header(),
-          _Footer(),
+          Footer(),
         ],
       )),
     );
@@ -101,48 +104,10 @@ class _Header extends StatelessWidget {
               return Center(
                 child: CircularProgressIndicator(),
               );
-            if (state is LoginLoadedState) return Text('congrats');
+            if (state is LoginLoadedState) context.router.push(ProfileRoute());
+
             return SizedBox.shrink();
           }),
-        ],
-      ),
-    );
-  }
-}
-
-class _Footer extends StatelessWidget {
-  const _Footer({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: AppColors.darkBlue,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ElevatedButton(
-              onPressed: () {}, child: Text('Вступить в сообщество')),
-          SizedBox(height: 20),
-          TextButton(child: Text('Главное'), onPressed: () {}),
-          TextButton(child: Text('o TMDB'), onPressed: () {}),
-          TextButton(child: Text('Связаться с нами'), onPressed: () {}),
-          TextButton(child: Text('Форумы поддержки'), onPressed: () {}),
-          TextButton(child: Text('API'), onPressed: () {}),
-          TextButton(child: Text('Статус системы'), onPressed: () {}),
-          TextButton(child: Text('Учавствуйте'), onPressed: () {}),
-          TextButton(child: Text('Писание об участии'), onPressed: () {}),
-          TextButton(child: Text('Добавить новый фильм'), onPressed: () {}),
-          TextButton(child: Text('Добавить новый сериал'), onPressed: () {}),
-          TextButton(child: Text('Сообщество'), onPressed: () {}),
-          TextButton(child: Text('Руководство'), onPressed: () {}),
-          TextButton(child: Text('Обсуждение'), onPressed: () {}),
-          TextButton(child: Text('Доска почета'), onPressed: () {}),
-          TextButton(child: Text('Twitter'), onPressed: () {}),
-          TextButton(child: Text('О праве'), onPressed: () {}),
-          TextButton(child: Text('Условие пользования'), onPressed: () {}),
-          TextButton(child: Text('API правила позльзования'), onPressed: () {}),
-          TextButton(
-              child: Text('Политика конвиденциальности'), onPressed: () {}),
         ],
       ),
     );

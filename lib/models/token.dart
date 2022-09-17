@@ -1,7 +1,7 @@
 class Token {
   final String _token;
 
-  get getToken => _token;
+  get token => _token;
 
   Token(this._token);
 
