@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:imdb/pages/authorization/login_page.dart';
 import 'package:imdb/pages/profile/profile_page.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:injectable/injectable.dart';
 
 part 'app_router.gr.dart';
 

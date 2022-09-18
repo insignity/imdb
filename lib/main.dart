@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:imdb/di/di.dart';
 import 'package:imdb/routing/app_router.dart';
 
 import 'theming/app_theme.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await configureDependencies();
   runApp( MyApp());
 }
 

@@ -5,17 +5,21 @@ import 'package:retrofit/http.dart';
 
 part 'api.g.dart';
 
-const String _baseUrl = 'https://api.themoviedb.org/3/';
-const String _apiKey = '8b455d081818f2a5acf036124e0b33f9';
-
 class Api extends __Api {
-  Api() : super(Dio(), baseUrl: _baseUrl) {
+  Api({required String baseUrl}) : super(Dio(), baseUrl: baseUrl) {
     super._dio.interceptors.addAll([AuthInterceptor()]);
   }
 }
 
-@RestApi(baseUrl: _baseUrl)
+@RestApi()
 abstract class _Api {
   @GET('authentication/token/new')
   Future<Token> getToken();
+
+  @POST('authentication/token/validate_with_login')
+  Future<String> createSession({
+    @Query('username') required String username,
+    @Query('password') required String password,
+    @Query('request_token') required String requestToken,
+  });
 }
