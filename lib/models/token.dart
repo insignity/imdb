@@ -1,7 +1,12 @@
-class Token {
+import 'package:hive/hive.dart';
+
+@HiveType(typeId: 0)
+class Token extends HiveObject{
+  @HiveField(0)
   final String _token;
 
-  get token => _token;
+  @HiveField(1)
+  get requestToken => _token;
 
   Token(this._token);
 

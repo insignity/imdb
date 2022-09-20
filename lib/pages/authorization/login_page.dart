@@ -28,8 +28,17 @@ class LoginPage extends StatelessWidget {
   }
 }
 
-class _Header extends StatelessWidget {
+class _Header extends StatefulWidget {
   const _Header({Key? key}) : super(key: key);
+
+  @override
+  State<_Header> createState() => _HeaderState();
+}
+
+class _HeaderState extends State<_Header> {
+
+  TextEditingController loginController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -78,10 +87,10 @@ class _Header extends StatelessWidget {
                 children: [
                   Text('Имя пользователя', style: context.txt.bodyText1),
                   SizedBox(height: 8),
-                  TextFormField(),
+                  TextFormField(controller: loginController),
                   SizedBox(height: 16),
                   Text('Пароль', style: context.txt.bodyText1),
-                  TextFormField(),
+                  TextFormField(controller: passwordController),
                   SizedBox(
                     height: 30,
                   ),
@@ -89,7 +98,9 @@ class _Header extends StatelessWidget {
                     children: [
                       ElevatedButton(
                           onPressed: () {
-                            _loginBloc.add(LoginSubmitEvent());
+                            _loginBloc.add(LoginSubmitEvent(
+                                name: loginController.text,
+                                password: passwordController.text));
                           },
                           child: Text('Войти')),
                       const SizedBox(width: 10),
