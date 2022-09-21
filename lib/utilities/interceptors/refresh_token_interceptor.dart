@@ -32,10 +32,8 @@ class RefreshTokenInterceptor extends Interceptor {
         final requestToken = Token(response.data!['request_token']);
         GetIt.I<SessionService>().update(requestToken);
 
-        print(req.queryParameters
-          ..addAll({'request_token': requestToken.requestToken}));
         final retry = await _dio.request(
-          req.path,
+          req.baseUrl + req.path,
           options: Options(
             method: req.method,
             headers: req.headers,
