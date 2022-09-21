@@ -23,13 +23,13 @@ class RefreshTokenInterceptor extends Interceptor {
       try {
         final req = err.requestOptions;
 
-        final response = await _dio.get<Map<String, dynamic>>(
+        final response = await _dio.get(
           '${req.baseUrl}authentication/token/new',
-          queryParameters: {
-            'api_key': Constants.apiKey,
-          },
+          queryParameters: {'api_key': Constants.apiKey},
         );
-        final requestToken = Token(response.data!['request_token']);
+
+        final requestToken = Token.fromJson(response.data!);
+
         GetIt.I<SessionService>().update(requestToken);
 
         final retry = await _dio.request(
@@ -44,8 +44,7 @@ class RefreshTokenInterceptor extends Interceptor {
             responseType: req.responseType,
           ),
           data: req.data,
-          queryParameters: req.queryParameters
-            ..addAll({'request_token': requestToken.requestToken}),
+          queryParameters: req.queryParameters..addAll(requestToken.toJson()),
           cancelToken: req.cancelToken,
           onReceiveProgress: req.onReceiveProgress,
           onSendProgress: req.onSendProgress,
